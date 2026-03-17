@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="BuisnessLogicLayer/BuisnessLogicLayer.csproj" Id="e9f82586-4aaa-43e2-8de9-14fc26ee0c8d" />
+  <Project Path="DataAccessLayer/DataAccessLayer.csproj" Id="95bf6cda-6750-400e-a0ec-f8ec16e72396" />
+  <Project Path="DVLD_DTOs/DVLD_DTOs.csproj" Id="fb2c0d3f-a0d6-4018-be7e-c8ed2a20b661" />
+  <Project Path="PresentationLayer/PresentationLayer.csproj" Id="8694ff0e-d9e0-4c57-835a-84f8787988eb" />
+</Solution>
