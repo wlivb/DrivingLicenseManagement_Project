@@ -1,10 +1,8 @@
 ﻿using PresentationLayer.Global_Classes;
 using PresentationLayer.Login;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using BuisnessLogicLayer;
 
 namespace PresentationLayer
 {
@@ -18,6 +16,8 @@ namespace PresentationLayer
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+
+            clsBllErrorBridge.InitializeLogging();
 
             while (true)
             {
