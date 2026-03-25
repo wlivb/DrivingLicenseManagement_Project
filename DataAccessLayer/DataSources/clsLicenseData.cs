@@ -43,14 +43,16 @@ namespace DataAccessLayer.DataSources
         public static DataTable GetDriverLicenses(int DriverID)
         {
             string query = @"SELECT     
-                           Licenses.LicenseID,
-                           ApplicationID,
-		                   LicenseClasses.ClassName, Licenses.IssueDate, 
-		                   Licenses.ExpirationDate, Licenses.IsActive
-                           FROM Licenses INNER JOIN
-                                LicenseClassID ON Licenses.LicenseClass = LicenseClasses.LicenseClassID
-                            where DriverID=@DriverID
-                            Order By IsActive Desc, ExpirationDate Desc";
+                    Licenses.LicenseID,
+                    Licenses.ApplicationID,
+                    LicenseClasses.ClassName, 
+                    Licenses.IssueDate, 
+                    Licenses.ExpirationDate, 
+                    Licenses.IsActive
+                    FROM Licenses 
+                    INNER JOIN LicenseClasses ON Licenses.LicenseClassID = LicenseClasses.LicenseClassID
+                    WHERE Licenses.DriverID = @DriverID
+                    ORDER BY Licenses.IsActive DESC, Licenses.ExpirationDate DESC";
 
             return clsSqlHelper.ExecuteDataTable(query,
                 cmd =>
