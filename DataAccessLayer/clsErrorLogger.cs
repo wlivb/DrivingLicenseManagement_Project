@@ -26,18 +26,21 @@ namespace DataAccessLayer
         {
             try
             {
-                using (var conn = new SqlConnection(clsDataAccessSettings.ConnectionString))
+                using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString))
                 {
                     string query = @"INSERT INTO ErrorLogs (Message, StackTrace, QueryText) 
                                      VALUES (@msg, @stack, @query)";
-                    var cmd = new SqlCommand(query, conn);
-                    cmd.Parameters.AddWithValue("@msg", e.Message);
-                    cmd.Parameters.AddWithValue("@stack", (object)e.StackTrace ?? DBNull.Value);
-                    cmd.Parameters.AddWithValue("@query", (object)e.QueryText ?? DBNull.Value);
 
-                    conn.Open();
-                    cmd.ExecuteNonQuery();
-                    return true;
+                    using (SqlCommand cmd = new SqlCommand(query, connection))
+                    {
+                        cmd.Parameters.AddWithValue("@msg", e.Message);
+                        cmd.Parameters.AddWithValue("@stack", (object)e.StackTrace ?? DBNull.Value);
+                        cmd.Parameters.AddWithValue("@query", (object)e.QueryText ?? DBNull.Value);
+
+                        connection.Open();
+                        cmd.ExecuteNonQuery();
+                        return true;
+                    }            
                 }
             }
             catch 
@@ -49,8 +52,11 @@ namespace DataAccessLayer
         {
             string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ErrorsLog.txt");
             string logEntry = $"\r\nLog [{DateTime.Now}]:\nMsg: {e.Message}\nQuery: {e.QueryText}\n{new string('-', 30)}";
-            File.AppendAllText(path, logEntry);
-        }
 
+            using (StreamWriter writer = new StreamWriter(path, append: true))
+            {
+                writer.WriteLine(logEntry);
+            } 
+        }
     }
 }
