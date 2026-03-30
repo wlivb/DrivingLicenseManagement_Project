@@ -1,10 +1,6 @@
 ﻿using DVLD_DTOs;
 using System;
 using System.Data;
-using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
-using System.Windows.Forms;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.Rebar;
 
 namespace DataAccessLayer.DataSources
 {

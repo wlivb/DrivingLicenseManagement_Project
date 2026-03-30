@@ -1,5 +1,4 @@
-﻿using System;
-
+﻿
 namespace DVLD_DTOs
 {
     public class UserDTO

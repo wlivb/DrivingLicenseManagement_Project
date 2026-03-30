@@ -15,6 +15,7 @@ namespace PresentationLayer.Global_Classes
         {
             try
             {
+                
                 string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "currentUser.json");
 
                 if (string.IsNullOrEmpty(Username))
