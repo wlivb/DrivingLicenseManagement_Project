@@ -4,6 +4,7 @@ using System;
 using System.IO;
 using System.Windows.Forms;
 using System.Runtime.Serialization.Json;
+using Microsoft.Win32;
 
 namespace PresentationLayer.Global_Classes
 {
@@ -11,28 +12,25 @@ namespace PresentationLayer.Global_Classes
     internal class clsGlobal
     {
         public static clsUser CurrentUser;
+        private static string _registryPath = @"SOFTWARE\DVLD";
         public static bool RememberUsernameAndPassword(string Username, string Password)
         {
             try
             {
-                
-                string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "currentUser.json");
-
-                if (string.IsNullOrEmpty(Username))
+                using (RegistryKey key = Registry.CurrentUser.CreateSubKey(_registryPath))
                 {
-                    if (File.Exists(filePath)) File.Delete(filePath);
-                    return true;
-                }
+                    if (string.IsNullOrEmpty(Username))
+                    {
+                        if (key != null)
+                        {
+                            key.DeleteValue("Username", false);
+                            key.DeleteValue("Password", false);
+                        }
+                        return true;
+                    }
 
-                UserDTO userToSave = new UserDTO();
-                userToSave.UserName = Username;
-                userToSave.Password = Password;
-
-                DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(UserDTO));
-
-                using (FileStream stream = new FileStream(filePath, FileMode.Create))
-                {
-                    serializer.WriteObject(stream, userToSave);
+                    key.SetValue("Username", Username);
+                    key.SetValue("Password", Password);
                 }
 
                 return true;
@@ -47,25 +45,18 @@ namespace PresentationLayer.Global_Classes
         {
             try
             {
-                string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "currentUser.json");
-                
-                if (!File.Exists(filePath)) return false;
-
-                DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(UserDTO));
-
-                using (FileStream fs = new FileStream(filePath, FileMode.Open))
+                using (RegistryKey key = Registry.CurrentUser.OpenSubKey(_registryPath))
                 {
-                    UserDTO storedUser = (UserDTO)serializer.ReadObject(fs);
-
-                    if (storedUser != null)
+                    if (key != null)
                     {
-                        Username = storedUser.UserName;
-                        Password = storedUser.Password;
-                        return true;
+                        Username = key.GetValue("Username") as string;
+                        Password = key.GetValue("Password") as string;
+
+                        return (!string.IsNullOrEmpty(Username));
                     }
                 }
 
-                return true; 
+                return false;
             }
             catch (Exception ex)
             {
