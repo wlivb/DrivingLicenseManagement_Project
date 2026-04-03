@@ -6,27 +6,6 @@ namespace DataAccessLayer
 {
     public static class clsSqlHelper
     {
-        public class ErrorLogEventArgs : EventArgs
-        {
-            public DateTime Timestamp { get; }
-            public string Message { get; }
-            public string StackTrace { get; } // may be null
-            public string QueryText { get; } // may be null
-
-            public ErrorLogEventArgs(Exception ex, string query)
-            {
-                Timestamp = DateTime.Now;
-                Message = ex.Message;
-                StackTrace = ex.StackTrace;
-                QueryText = query;
-            }
-        }
-
-        public static event EventHandler<ErrorLogEventArgs> OnErrorOccurred;
-        private static void RaiseError(Exception ex, string query)
-        {
-            OnErrorOccurred?.Invoke(null, new ErrorLogEventArgs(ex, query));
-        }
         public static bool ExecuteReader(string query, Action<SqlCommand> setParams, Action<SqlDataReader> readRow)
         {
             try
@@ -48,8 +27,7 @@ namespace DataAccessLayer
             }
             catch (Exception ex) 
             {
-                RaiseError(ex, query);
-                throw; 
+                clsLogger.LogError("SQL Error: " + ex.Message + "\nQuery: " + query);
             }
             return false;
         }
@@ -68,8 +46,8 @@ namespace DataAccessLayer
             }
             catch (Exception ex)
             {
-                RaiseError(ex, query); 
-                throw;
+                clsLogger.LogError("SQL Error: " + ex.Message + "\nQuery: " + query);
+                return -1;
             }
         }
         public static int ExecuteNonQuery(string query, Action<SqlCommand> setParams)
@@ -86,8 +64,8 @@ namespace DataAccessLayer
             }
             catch (Exception ex) 
             {
-                RaiseError(ex, query);
-                throw;
+                clsLogger.LogError("SQL Error: " + ex.Message + "\nQuery: " + query);
+                return -1;
             }
         }
         public static DataTable ExecuteDataTable(string query, Action<SqlCommand> setParams = null)
@@ -108,8 +86,7 @@ namespace DataAccessLayer
             }
             catch (Exception ex) 
             {
-                RaiseError(ex, query);
-                throw;
+                clsLogger.LogError("SQL Error: " + ex.Message + "\nQuery: " + query);
             }
             return dt;
         }
@@ -128,9 +105,9 @@ namespace DataAccessLayer
             }
             catch (Exception ex)
             {
-                RaiseError(ex, query);
-                throw; 
+                clsLogger.LogError("SQL Error: " + ex.Message + "\nQuery: " + query);
             }
+            return false;
         }
     }
 }

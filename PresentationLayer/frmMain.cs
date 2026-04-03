@@ -5,10 +5,8 @@ using PresentationLayer.Applications.Renew_Local_License;
 using PresentationLayer.Applications.ReplaceLostOrDamagedLicense;
 using PresentationLayer.Applications.Rlease_Detained_License;
 using PresentationLayer.Drivers;
-using PresentationLayer.ErrorLogs;
 using PresentationLayer.Global_Classes;
 using PresentationLayer.Licenses.Detain_License;
-using PresentationLayer.Login;
 using PresentationLayer.People;
 using PresentationLayer.Tests.Test_Types;
 using PresentationLayer.Users;
@@ -127,10 +125,5 @@ namespace PresentationLayer
             frm.ShowDialog();
         }
 
-        private void errorsLogToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            frmErrorLogsList frm = new frmErrorLogsList();
-            frm.ShowDialog();
-        }
     }
 }

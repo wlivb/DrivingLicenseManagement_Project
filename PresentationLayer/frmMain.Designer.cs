@@ -60,7 +60,6 @@
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.signOutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
-            this.errorsLogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.msMainMenue.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -298,8 +297,7 @@
             this.changePasswordToolStripMenuItem,
             this.toolStripSeparator4,
             this.signOutToolStripMenuItem,
-            this.toolStripSeparator3,
-            this.errorsLogToolStripMenuItem});
+            this.toolStripSeparator3});
             this.closeToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.closeToolStripMenuItem.Name = "closeToolStripMenuItem";
             this.closeToolStripMenuItem.Size = new System.Drawing.Size(151, 25);
@@ -338,13 +336,6 @@
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
             this.toolStripSeparator3.Size = new System.Drawing.Size(211, 6);
-            // 
-            // errorsLogToolStripMenuItem
-            // 
-            this.errorsLogToolStripMenuItem.Name = "errorsLogToolStripMenuItem";
-            this.errorsLogToolStripMenuItem.Size = new System.Drawing.Size(214, 26);
-            this.errorsLogToolStripMenuItem.Text = "Errors Log";
-            this.errorsLogToolStripMenuItem.Click += new System.EventHandler(this.errorsLogToolStripMenuItem_Click);
             // 
             // frmMain
             // 
@@ -406,6 +397,5 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
         private System.Windows.Forms.ToolStripMenuItem signOutToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
-        private System.Windows.Forms.ToolStripMenuItem errorsLogToolStripMenuItem;
     }
 }

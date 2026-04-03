@@ -2,7 +2,6 @@
 using PresentationLayer.Login;
 using System;
 using System.Windows.Forms;
-using BuisnessLogicLayer;
 
 namespace PresentationLayer
 {
@@ -16,8 +15,6 @@ namespace PresentationLayer
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-
-            clsBllErrorBridge.InitializeLogging();
 
             while (true)
             {

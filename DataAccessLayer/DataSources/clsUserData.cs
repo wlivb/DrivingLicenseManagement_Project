@@ -132,7 +132,7 @@ namespace DataAccessLayer.DataSources
         }
         public static DataTable GetAllUsers()
         {
-            return clsSqlHelper.ExecuteDataTable("SELECT * FROM v_UsersList");
+            return clsSqlHelper.ExecuteDataTable("SELECT * FROM v_UsersListt");
         }
         public static bool IsUserExist(int UserID)
         {
