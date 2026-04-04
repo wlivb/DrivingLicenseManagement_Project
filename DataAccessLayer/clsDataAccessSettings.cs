@@ -1,7 +1,9 @@
-﻿namespace DataAccessLayer
+﻿using System.Configuration; 
+
+namespace DataAccessLayer
 {
-    static class clsDataAccessSettings
+    public static class clsDataAccessSettings 
     {
-        public static string ConnectionString = "Server=. ;Database=DVLD;User Id=sa;password= 123456;";
+        public static string ConnectionString = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
     }
 }
