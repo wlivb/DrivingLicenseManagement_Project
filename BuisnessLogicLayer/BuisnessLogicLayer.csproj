@@ -50,6 +50,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="clsUtil.cs" />
     <Compile Include="DataManagement\clsApplication.cs" />
     <Compile Include="DataManagement\clsApplicationType.cs" />
     <Compile Include="DataManagement\clsCountry.cs" />

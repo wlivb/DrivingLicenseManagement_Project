@@ -38,9 +38,11 @@ namespace BuisnessLogicLayer.DataManagement
             else
                 return null;
         }
-        public static clsUser Find(string UserName, string PAS)
+        public static clsUser Find(string UserName, string Password)
         {
-            UserDTO dto = clsUserData.GetUserByUserNameAndPassword(UserName, PAS);
+            string HashedPassword = clsUtil.ComputeHash(Password);
+
+            UserDTO dto = clsUserData.GetUserByUserNameAndPassword(UserName, HashedPassword);
 
             if (dto != null)
                 return new clsUser(dto);
@@ -51,6 +53,8 @@ namespace BuisnessLogicLayer.DataManagement
         {
             if(!IsPersonAlreadyUser(this.DTO.PersonID))
             {
+                this.DTO.Password = clsUtil.ComputeHash(this.DTO.Password);
+
                 this.DTO.UserID = clsUserData.AddNewUser(this.DTO);
                 return (this.DTO.UserID != -1);
             } 
@@ -62,7 +66,9 @@ namespace BuisnessLogicLayer.DataManagement
         }
         public bool ChangePassword(string NewPassword)
         {
-            return clsUserData.ChangeUserPassword(this.DTO.UserID, NewPassword);
+            string HashedPassword = clsUtil.ComputeHash(NewPassword);
+
+            return clsUserData.ChangeUserPassword(this.DTO.UserID, HashedPassword);
         }
         public static DataTable GetAllUsers()
         {

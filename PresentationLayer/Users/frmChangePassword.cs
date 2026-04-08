@@ -1,13 +1,8 @@
 ﻿using BuisnessLogicLayer.DataManagement;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using BuisnessLogicLayer;
 
 namespace PresentationLayer.Users
 {
@@ -51,7 +46,7 @@ namespace PresentationLayer.Users
             if (string.IsNullOrEmpty(txtCurrentPassword.Text.Trim()))
             {
                 e.Cancel = true;
-                errorProvider1.SetError(txtCurrentPassword, "Username cannot be blank");
+                errorProvider1.SetError(txtCurrentPassword, "Current Password cannot be blank");
                 return;
             }
             else
@@ -60,7 +55,9 @@ namespace PresentationLayer.Users
             }
             ;
 
-            if (_User.DTO.Password != txtCurrentPassword.Text.Trim())
+            string HashedInput = clsUtil.ComputeHash(txtCurrentPassword.Text.Trim());
+
+            if (_User.DTO.Password != HashedInput)
             {
                 e.Cancel = true;
                 errorProvider1.SetError(txtCurrentPassword, "Current password is wrong!");
@@ -102,23 +99,22 @@ namespace PresentationLayer.Users
         {
             if (!this.ValidateChildren())
             {
-                //Here we dont continue becuase the form is not valid
-                MessageBox.Show("Some fileds are not valide!, put the mouse over the red icon(s) to see the erro",
+                MessageBox.Show("Some fields are not valid!, put the mouse over the red icon(s) to see the error",
                     "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
-            _User.DTO.Password = txtNewPassword.Text;
-
-            if (_User.Save())
+            if (_User.ChangePassword(txtNewPassword.Text.Trim()))
             {
                 MessageBox.Show("Password Changed Successfully.",
                    "Saved.", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 _ResetDefualtValues();
+
+                _User.DTO.Password = clsUtil.ComputeHash(txtNewPassword.Text.Trim());
             }
             else
             {
-                MessageBox.Show("An Erro Occured, Password did not change.",
+                MessageBox.Show("An Error Occurred, Password did not change.",
                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }

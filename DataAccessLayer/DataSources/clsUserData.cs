@@ -92,14 +92,13 @@ namespace DataAccessLayer.DataSources
         }
         public static bool UpdateUser(UserDTO dto)
         {
-            string query = @"UPDATE Users SET UserName=@USRN, Password=@PAS, IsActive=@ISACT WHERE UserID=@ID";
+            string query = @"UPDATE Users SET UserName=@USRN, IsActive=@ISACT WHERE UserID=@ID";
 
             return clsSqlHelper.ExecuteNonQuery(query,
               cmd =>
               {
                   cmd.Parameters.AddWithValue("@ID", dto.UserID);
                   cmd.Parameters.AddWithValue("@USRN", dto.UserName);
-                  cmd.Parameters.AddWithValue("@PAS", dto.Password);
                   cmd.Parameters.AddWithValue("@ISACT", dto.IsActive);
               }
 
@@ -132,7 +131,7 @@ namespace DataAccessLayer.DataSources
         }
         public static DataTable GetAllUsers()
         {
-            return clsSqlHelper.ExecuteDataTable("SELECT * FROM v_UsersListt");
+            return clsSqlHelper.ExecuteDataTable("SELECT * FROM v_UsersList");
         }
         public static bool IsUserExist(int UserID)
         {
