@@ -1,5 +1,6 @@
 ﻿using BuisnessLogicLayer.DataManagement;
 using DVLD.Classes;
+using DVLD_DTOs;
 using System;
 using System.ComponentModel;
 using System.Data;
@@ -93,33 +94,36 @@ namespace PresentationLayer.People
 
             //the following code will not be executed if the person was not found
             lblPersonID.Text = _PersonID.ToString();
-            txtFirstName.Text = _Person.DTO.FirstName;
-            txtSecondName.Text = _Person.DTO.SecondName;
-            txtThirdName.Text = _Person.DTO.ThirdName;
-            txtLastName.Text = _Person.DTO.LastName;
-            txtNationalNo.Text = _Person.DTO.NationalNo;
-            dtpDateOfBirth.Value = _Person.DTO.DateOfBirth;
+            _ApplyPersonDtoToForm(_Person.DTO);
+        }
+        private void _ApplyPersonDtoToForm(PersonDTO dto)
+        {
+            txtFirstName.Text = dto.FirstName;
+            txtSecondName.Text = dto.SecondName;
+            txtThirdName.Text = dto.ThirdName;
+            txtLastName.Text = dto.LastName;
+            txtNationalNo.Text = dto.NationalNo;
+            dtpDateOfBirth.Value = dto.DateOfBirth;
 
-            if (_Person.DTO.Gendor == 0)
+            if (dto.Gendor == 0)
                 rbMale.Checked = true;
             else
                 rbFemale.Checked = true;
 
-            txtAddress.Text = _Person.DTO.Address;
-            txtPhone.Text = _Person.DTO.Phone;
-            txtEmail.Text = _Person.DTO.Email;
+            txtAddress.Text = dto.Address;
+            txtPhone.Text = dto.Phone;
+            txtEmail.Text = dto.Email;
             cbCountry.SelectedIndex = cbCountry.FindString(_Person.NationalityCountryName);
 
             //load person image incase it was set.
-            if (_Person.DTO.ImagePath != "")
+            if (!string.IsNullOrWhiteSpace(dto.ImagePath))
             {
-                pbPersonImage.ImageLocation = _Person.DTO.ImagePath;
+                pbPersonImage.ImageLocation = dto.ImagePath;
 
             }
 
             //hide/show the remove linke incase there is no image for the person.
-            llRemoveImage.Visible = (_Person.DTO.ImagePath != "");
-
+            llRemoveImage.Visible = !string.IsNullOrWhiteSpace(dto.ImagePath);
         }
         private void frmAddUpdatePerson_Load(object sender, EventArgs e)
         {
@@ -128,7 +132,11 @@ namespace PresentationLayer.People
             if (_Mode == enMode.Update)
                 _LoadData();
         }
-        private bool _HandlePersonImage()
+        private string _GetSelectedImagePath()
+        {
+            return pbPersonImage.ImageLocation ?? string.Empty;
+        }
+        private bool _HandlePersonImage(string oldImagePath, ref string newImagePath)
         {
             //this procedure will handle the person image,
             //it will take care of deleting the old image from the folder
@@ -136,16 +144,16 @@ namespace PresentationLayer.People
             // place it in the images folder.
 
 
-            //_Person.DTO.ImagePath contains the old Image, we check if it changed then we copy the new image
-            if (_Person.DTO.ImagePath != pbPersonImage.ImageLocation)
+            // oldImagePath contains the old image, we check if it changed then copy new image.
+            if (oldImagePath != newImagePath)
             {
-                if (_Person.DTO.ImagePath != "")
+                if (!string.IsNullOrWhiteSpace(oldImagePath))
                 {
                     //first we delete the old image from the folder in case there is any.
 
                     try
                     {
-                        File.Delete(_Person.DTO.ImagePath);
+                        File.Delete(oldImagePath);
                     }
                     catch (IOException)
                     {
@@ -154,14 +162,15 @@ namespace PresentationLayer.People
                     }
                 }
 
-                if (pbPersonImage.ImageLocation != null)
+                if (!string.IsNullOrWhiteSpace(newImagePath))
                 {
                     //then we copy the new image to the image folder after we rename it
-                    string SourceImageFile = pbPersonImage.ImageLocation.ToString();
+                    string sourceImageFile = newImagePath;
 
-                    if (clsUtil.CopyImageToProjectImagesFolder(ref SourceImageFile))
+                    if (clsUtil.CopyImageToProjectImagesFolder(ref sourceImageFile))
                     {
-                        pbPersonImage.ImageLocation = SourceImageFile;
+                        newImagePath = sourceImageFile;
+                        pbPersonImage.ImageLocation = sourceImageFile;
                         return true;
                     }
                     else
@@ -174,6 +183,25 @@ namespace PresentationLayer.People
             }
             return true;
         }
+        private PersonDTO _CreatePersonDtoFromForm(int personId, string imagePath, int nationalityCountryID)
+        {
+            return new PersonDTO
+            {
+                PersonID = personId,
+                FirstName = txtFirstName.Text.Trim(),
+                SecondName = txtSecondName.Text.Trim(),
+                ThirdName = txtThirdName.Text.Trim(),
+                LastName = txtLastName.Text.Trim(),
+                NationalNo = txtNationalNo.Text.Trim(),
+                Email = txtEmail.Text.Trim(),
+                Phone = txtPhone.Text.Trim(),
+                Address = txtAddress.Text.Trim(),
+                DateOfBirth = dtpDateOfBirth.Value,
+                Gendor = rbMale.Checked ? (byte)enGendor.Male : (byte)enGendor.Female,
+                NationalityCountryID = nationalityCountryID,
+                ImagePath = imagePath
+            };
+        }
         private void btnSave_Click(object sender, EventArgs e)
         {
             if (!this.ValidateChildren())
@@ -183,14 +211,6 @@ namespace PresentationLayer.People
                 return;
 
             }
-
-            if (pbPersonImage.ImageLocation != null)
-                _Person.DTO.ImagePath = pbPersonImage.ImageLocation;
-            else
-                _Person.DTO.ImagePath = "";
-
-            if (!_HandlePersonImage())
-                return;
 
             clsCountry SelectedCountry = clsCountry.Find(cbCountry.Text);
 
@@ -202,22 +222,13 @@ namespace PresentationLayer.People
 
             int NationalityCountryID = SelectedCountry.DTO.CountryID;
 
-            _Person.DTO.FirstName = txtFirstName.Text.Trim();
-            _Person.DTO.SecondName = txtSecondName.Text.Trim();
-            _Person.DTO.ThirdName = txtThirdName.Text.Trim();
-            _Person.DTO.LastName = txtLastName.Text.Trim();
-            _Person.DTO.NationalNo = txtNationalNo.Text.Trim();
-            _Person.DTO.Email = txtEmail.Text.Trim();
-            _Person.DTO.Phone = txtPhone.Text.Trim();
-            _Person.DTO.Address = txtAddress.Text.Trim();
-            _Person.DTO.DateOfBirth = dtpDateOfBirth.Value;
+            string oldImagePath = _Person.DTO.ImagePath;
+            string selectedImagePath = _GetSelectedImagePath();
+            if (!_HandlePersonImage(oldImagePath, ref selectedImagePath))
+                return;
 
-            if (rbMale.Checked)
-                _Person.DTO.Gendor = (byte)enGendor.Male;
-            else
-                _Person.DTO.Gendor = (byte)enGendor.Female;
-
-            _Person.DTO.NationalityCountryID = NationalityCountryID;
+            int personId = _Person.DTO.PersonID;
+            _Person.DTO = _CreatePersonDtoFromForm(personId, selectedImagePath, NationalityCountryID);
 
             if (_Person.Save())
             {

@@ -1,4 +1,5 @@
 ﻿using BuisnessLogicLayer.DataManagement;
+using DVLD_DTOs;
 using System;
 using System.ComponentModel;
 using System.Windows.Forms;
@@ -64,12 +65,27 @@ namespace PresentationLayer.Users
             }
 
             //the following code will not be executed if the person was not found
-            lblUserID.Text = _User.DTO.UserID.ToString();
-            txtUserName.Text = _User.DTO.UserName;
-            txtPassword.Text = _User.DTO.Password;
-            txtConfirmPassword.Text = _User.DTO.Password;
-            chkIsActive.Checked = _User.DTO.IsActive;
-            ctrlPersonCardWithFilter1.LoadPersonInfo(_User.DTO.PersonID);
+            _ApplyUserDtoToForm(_User.DTO);
+        }
+        private void _ApplyUserDtoToForm(UserDTO dto)
+        {
+            lblUserID.Text = dto.UserID.ToString();
+            txtUserName.Text = dto.UserName;
+            txtPassword.Text = dto.Password;
+            txtConfirmPassword.Text = dto.Password;
+            chkIsActive.Checked = dto.IsActive;
+            ctrlPersonCardWithFilter1.LoadPersonInfo(dto.PersonID);
+        }
+        private UserDTO _CreateUserDtoFromForm(int userId)
+        {
+            return new UserDTO
+            {
+                UserID = userId,
+                PersonID = ctrlPersonCardWithFilter1.PersonID,
+                UserName = txtUserName.Text.Trim(),
+                Password = txtPassword.Text.Trim(),
+                IsActive = chkIsActive.Checked
+            };
         }
         private void frmAddUpdateUser_Load(object sender, EventArgs e)
         {
@@ -88,10 +104,8 @@ namespace PresentationLayer.Users
                 return;
             }
 
-            _User.DTO.PersonID = ctrlPersonCardWithFilter1.PersonID;
-            _User.DTO.UserName = txtUserName.Text.Trim();
-            _User.DTO.Password = txtPassword.Text.Trim();
-            _User.DTO.IsActive = chkIsActive.Checked;
+            int userId = _User.DTO.UserID;
+            _User.DTO = _CreateUserDtoFromForm(userId);
 
 
             if (_User.Save())

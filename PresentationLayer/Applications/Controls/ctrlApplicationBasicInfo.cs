@@ -1,14 +1,6 @@
 ﻿using BuisnessLogicLayer.DataManagement;
 using PresentationLayer.Global_Classes;
 using PresentationLayer.People;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace PresentationLayer.Applications.Controls
@@ -64,6 +56,11 @@ namespace PresentationLayer.Applications.Controls
         }
         private void llViewPersonInfo_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
+            if (_Application == null)
+            {
+                return;
+            }
+
             frmShowPersonInfo frm = new frmShowPersonInfo(_Application.DTO.ApplicantPersonID);
             frm.ShowDialog();
 

@@ -49,6 +49,7 @@ namespace PresentationLayer.People.Controls
         }
         public void ResetPersonInfo()
         {
+            _Person = null;
             _PersonId = -1;
             lblPersonID.Text = "[????]";
             lblNationalNo.Text = "[????]";
@@ -59,6 +60,8 @@ namespace PresentationLayer.People.Controls
             lblDateOfBirth.Text = "[????]";
             lblCountry.Text = "[????]";
             lblAddress.Text = "[????]";
+            pbPersonImage.Image = Resources.Male_512;
+            llEditPersonInfo.Enabled = false;
         }
         private void _LoadPersonImage()
         {
@@ -80,7 +83,8 @@ namespace PresentationLayer.People.Controls
             lblEmail.Text = _Person.DTO.Email;
             lblPhone.Text = _Person.DTO.Phone;
             lblDateOfBirth.Text = _Person.DTO.DateOfBirth.ToShortDateString();
-            lblCountry.Text = clsCountry.Find(_Person.DTO.NationalityCountryID).DTO.CountryName;
+            clsCountry country = clsCountry.Find(_Person.DTO.NationalityCountryID);
+            lblCountry.Text = country != null ? country.DTO.CountryName : "[Unknown]";
             lblAddress.Text = _Person.DTO.Address;
             _LoadPersonImage();
         }

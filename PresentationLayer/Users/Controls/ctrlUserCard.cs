@@ -1,12 +1,4 @@
 ﻿using BuisnessLogicLayer.DataManagement;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace PresentationLayer.Users.Controls
@@ -33,13 +25,14 @@ namespace PresentationLayer.Users.Controls
                 return;
             }
 
+            _UserID = UserID;
             _FillUserInfo();
         }
         private void _FillUserInfo()
         {
             ctrlPersonCard1.LoadPersonInfo(_User.DTO.PersonID);
             lblUserID.Text = _User.DTO.UserID.ToString();
-            lblUserName.Text = _User.DTO.UserName.ToString();
+            lblUserName.Text = _User.DTO.UserName;
 
             if (_User.DTO.IsActive)
                 lblIsActive.Text = "Yes";
@@ -48,6 +41,8 @@ namespace PresentationLayer.Users.Controls
         }
         private void _ResetPersonInfo()
         {
+            _User = null;
+            _UserID = -1;
             ctrlPersonCard1.ResetPersonInfo();
             lblUserID.Text = "[???]";
             lblUserName.Text = "[???]";

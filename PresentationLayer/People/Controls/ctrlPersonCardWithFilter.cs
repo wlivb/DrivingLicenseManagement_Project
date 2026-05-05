@@ -1,13 +1,7 @@
 ﻿using BuisnessLogicLayer.DataManagement;
 using DVLD_DTOs;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace PresentationLayer.People.Controls
@@ -18,12 +12,7 @@ namespace PresentationLayer.People.Controls
 
         protected virtual void PersonSelected(int PersonId)
         {
-            Action<int> handler = OnPersonSelected;
-
-            if (handler != null)
-            {
-                handler(PersonId);
-            }
+            OnPersonSelected?.Invoke(PersonId);
         }
 
         public ctrlPersonCardWithFilter()
@@ -74,7 +63,15 @@ namespace PresentationLayer.People.Controls
             switch (cbFilterBy.Text)
             {
                 case "Person ID":
-                    ctrlPersonCard1.LoadPersonInfo(int.Parse(txtFilterValue.Text));
+                    if (int.TryParse(txtFilterValue.Text, out int personID))
+                    {
+                        ctrlPersonCard1.LoadPersonInfo(personID);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Person ID must be numeric.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
 
                     break;
 
@@ -119,12 +116,17 @@ namespace PresentationLayer.People.Controls
             {
                 e.Cancel = true;
                 errorProvider1.SetError(txtFilterValue, "This field is required!");
+                return;
             }
-            else
+
+            if (cbFilterBy.Text == "Person ID" && !int.TryParse(txtFilterValue.Text.Trim(), out _))
             {
-                //e.Cancel = false;
-                errorProvider1.SetError(txtFilterValue, null);
+                e.Cancel = true;
+                errorProvider1.SetError(txtFilterValue, "Person ID must be numeric!");
+                return;
             }
+
+            errorProvider1.SetError(txtFilterValue, null);
         }
         private void DataBackEvent(object sender, int PersonID)
         {
