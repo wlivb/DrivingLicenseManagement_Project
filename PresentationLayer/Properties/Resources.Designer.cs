@@ -8,6 +8,8 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using System.Drawing;
+
 namespace PresentationLayer.Properties
 {
 
@@ -33,6 +35,8 @@ namespace PresentationLayer.Properties
         internal Resources()
         {
         }
+
+        public static Image Male_512 { get; internal set; }
 
         /// <summary>
         ///   Returns the cached ResourceManager instance used by this class.
