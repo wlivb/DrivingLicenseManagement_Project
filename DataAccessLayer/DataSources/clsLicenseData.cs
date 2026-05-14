@@ -1,6 +1,7 @@
-﻿using System;
+﻿using DVLD_DTOs;
+using System;
+using System.Collections.Generic;
 using System.Data;
-using DVLD_DTOs;
 
 namespace DataAccessLayer.DataSources
 {
@@ -138,6 +139,37 @@ namespace DataAccessLayer.DataSources
                                 {
                                     cmd.Parameters.AddWithValue("@LicenseID", licenseID);
                                 }) > 0;
+        }
+        public static List<ExpiredLicenseInfoDTO> GetExpiredLicenses()
+        {
+            List<ExpiredLicenseInfoDTO> list = new List<ExpiredLicenseInfoDTO>();
+
+            string query = @"SELECT Licenses.LicenseID, 
+                           (People.FirstName + ' ' + People.LastName) AS FullName, 
+                           People.Email, 
+                           Licenses.ExpirationDate
+                           FROM Licenses
+                           JOIN Drivers ON Licenses.DriverID = Drivers.DriverID
+                           JOIN People ON Drivers.PersonID = People.PersonID
+                           WHERE Licenses.ExpirationDate < GETDATE() AND Licenses.IsActive = 1";
+
+            clsSqlHelper.ExecuteReader(query,
+                        cmd =>
+                        {
+
+                        },
+                        reader =>
+                        {
+                            list.Add(new ExpiredLicenseInfoDTO
+                            {
+                                LicenseID = (int)reader["LicenseID"],
+                                DriverName = (string)reader["FullName"],
+                                DriverEmail = (string)reader["Email"],
+                                ExpiryDate = (DateTime)reader["ExpirationDate"]
+                            });
+                        } );
+
+            return list;
         }
     }
 }

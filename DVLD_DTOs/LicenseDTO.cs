@@ -31,4 +31,22 @@ namespace DVLD_DTOs
         }
         public LicenseDTO() { }
     }
+
+    public class ExpiredLicenseInfoDTO
+    {
+        public int LicenseID { get; set; }
+        public string DriverName { get; set; }
+        public string DriverEmail { get; set; }
+        public DateTime ExpiryDate { get; set; }
+
+        public ExpiredLicenseInfoDTO (int licenseID, string driverName, string driverEmail, DateTime expiryDate)
+        {
+            LicenseID = licenseID;
+            DriverName = driverName;
+            DriverEmail = driverEmail;
+            ExpiryDate = expiryDate;
+        }
+
+        public ExpiredLicenseInfoDTO() { }
+    }
 }

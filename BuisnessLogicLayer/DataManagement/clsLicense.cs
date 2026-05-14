@@ -1,6 +1,8 @@
-﻿using DataAccessLayer.DataSources;
+﻿using DataAccessLayer;
+using DataAccessLayer.DataSources;
 using DVLD_DTOs;
 using System;
+using System.Collections.Generic;
 using System.Data;
 using static BuisnessLogicLayer.DataManagement.clsApplication;
 
@@ -236,6 +238,10 @@ namespace BuisnessLogicLayer.DataManagement
                 return newLicense;
             else
                 return null;
+        }
+        public static List<ExpiredLicenseInfoDTO> GetExpiredLicenses()
+        {
+            return clsLicenseData.GetExpiredLicenses();
         }
     }
 }
